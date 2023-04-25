@@ -60,7 +60,7 @@ class LinkedinTest {
             log.info("{} ---> {}", framework, numJobs);
 
             // Wait a guard time to avoid Linkedin to force login
-            Thread.sleep(Duration.ofSeconds(5).toMillis());
+            Thread.sleep(Duration.ofSeconds(10).toMillis());
         }
     }
 
