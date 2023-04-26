@@ -27,3 +27,20 @@ jobs:
       run: Xvfb $DISPLAY &
     - name: Run tests
       run: mvn -B test
+    - name: Commit files
+      id: git
+      run: |
+        export CHANGES=$(git status -s)
+        if [ -n "$CHANGES" ]; then
+           git config --local user.email "boni.garcia@uc3m.es"
+           git config --local user.name "Boni Garcia"
+           git add docs/dataset.csv
+           git commit -m "Update jobs dataset (`date`)" -a
+           echo "::set-output name=commit::true"
+        fi
+    - name: Push changes
+      if: steps.git.outputs.commit == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
