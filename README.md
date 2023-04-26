@@ -3,7 +3,7 @@
 [![License badge](https://img.shields.io/badge/license-Apache2-green.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Twitter Follow](https://img.shields.io/twitter/follow/boni_gg.svg?style=social)](https://twitter.com/boni_gg)
 
-# linkedin-job-tracker
+# Linkedin Job Tracker ![](https://bonigarcia.dev/linkedin-job-tracker/img/linkedin-job-tracker.png)
 
 This repository contains an automated test to track jobs about [Selenium](https://www.selenium.dev/), [Cypress](https://www.cypress.io/), [Puppeteer](https://pptr.dev/), and [Playwright](https://playwright.dev/) on [Linkedin](https://linkedin.com/).
 
