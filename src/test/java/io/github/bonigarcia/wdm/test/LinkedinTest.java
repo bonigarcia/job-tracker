@@ -20,8 +20,12 @@ import static java.lang.invoke.MethodHandles.lookup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.io.FileWriter;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -35,9 +39,13 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 
+import com.opencsv.CSVWriter;
+
 class LinkedinTest {
 
     static final Logger log = getLogger(lookup().lookupClass());
+    static final String DATASET = "docs/dataset.csv";
+    static final String DATE_PATTERN = "dd MMM, yyyy";
 
     WebDriver driver;
 
@@ -52,15 +60,28 @@ class LinkedinTest {
     }
 
     @Test
-    void testLinkedinJobs() throws InterruptedException {
-        List<String> frameworks = Arrays.asList("Selenium", "Cypress",
-                "Puppeteer", "Playwright");
+    void testLinkedinJobs() throws Exception {
+        List<String> results = new ArrayList<>();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_PATTERN);
+        String now = simpleDateFormat.format(new Date());
+        results.add(now);
+
+        List<String> frameworks = Arrays.asList("Puppeteer", "Cypress",
+                "Selenium", "Playwright");
+
+        // Read number of jobs for each framework from Linkedin
         for (String framework : frameworks) {
             int numJobs = searchJobs(framework);
             log.info("{} ---> {}", framework, numJobs);
+            results.add(String.valueOf(numJobs));
 
             // Wait a guard time to avoid Linkedin to force login
             Thread.sleep(Duration.ofSeconds(10).toMillis());
+        }
+
+        // Write results to CSV file
+        try (CSVWriter writer = new CSVWriter(new FileWriter(DATASET, true))) {
+            writer.writeNext(results.toArray(new String[0]), false);
         }
     }
 

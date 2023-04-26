@@ -12,6 +12,7 @@
         <junit.version>5.9.2</junit.version>
         <assertj.version>3.24.2</assertj.version>
         <selenium-java.version>4.9.0</selenium-java.version>
+        <opencsv.version>5.7.1</opencsv.version>
 
         <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
 
@@ -52,6 +53,12 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>${selenium-java.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>${opencsv.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
