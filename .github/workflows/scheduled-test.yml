@@ -1,4 +1,4 @@
-name: build
+name: scheduled-test
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     - cron:  '0 0 * * *'
 
 jobs:
-  build:
+  test:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
