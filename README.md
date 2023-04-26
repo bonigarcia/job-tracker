@@ -3,11 +3,13 @@
 [![License badge](https://img.shields.io/badge/license-Apache2-green.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Twitter Follow](https://img.shields.io/twitter/follow/boni_gg.svg?style=social)](https://twitter.com/boni_gg)
 
-# job-tracker
+# linkedin-job-tracker
 
 This repository contains an automated test to track jobs about [Selenium](https://www.selenium.dev/), [Cypress](https://www.cypress.io/), [Puppeteer](https://pptr.dev/), and [Playwright](https://playwright.dev/) on [Linkedin](https://linkedin.com/).
+
+The resulting chart's dataset is automatically updated daily in the scheduled job. Check out the resulting [web page](https://bonigarcia.dev/linkedin-job-tracker/).
 
 
 ## About
 
-job-tracker (Copyright &copy; 2023) is a project created and maintained by [Boni García](https://bonigarcia.dev/) licensed under [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
+linkedin-job-tracker (Copyright &copy; 2023) is a project created and maintained by [Boni García](https://bonigarcia.dev/) licensed under [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
