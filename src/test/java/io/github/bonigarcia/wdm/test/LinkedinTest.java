@@ -92,7 +92,7 @@ class LinkedinTest {
         driver.get(linkedinUrl);
         log.trace("URL: {}", linkedinUrl);
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         WebElement newJobs = wait
                 .until(ExpectedConditions.presenceOfElementLocated(
                         By.className("results-context-header__new-jobs")));
