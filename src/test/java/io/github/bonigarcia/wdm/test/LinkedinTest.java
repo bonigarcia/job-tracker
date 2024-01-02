@@ -76,7 +76,7 @@ class LinkedinTest {
             results.add(String.valueOf(numJobs));
 
             // Wait a guard time to avoid Linkedin to force login
-            Thread.sleep(Duration.ofSeconds(10).toMillis());
+            Thread.sleep(Duration.ofSeconds(20).toMillis());
         }
 
         // Write results to CSV file
