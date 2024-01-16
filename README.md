@@ -28,4 +28,4 @@ The automated job started to work on **April 27, 2023**. Since then, each day, t
 
 ## About
 
-job-tracker (Copyright &copy; 2023) is a project created and maintained by [Boni García](https://bonigarcia.dev/) licensed under [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
+job-tracker (Copyright &copy; 2023-2024) is a project created and maintained by [Boni García](https://bonigarcia.dev/) licensed under [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
