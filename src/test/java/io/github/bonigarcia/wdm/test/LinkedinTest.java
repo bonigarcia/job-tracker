@@ -92,11 +92,20 @@ class LinkedinTest {
         driver.get(linkedinUrl);
         log.trace("URL: {}", linkedinUrl);
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-        WebElement newJobs = wait
-                .until(ExpectedConditions.presenceOfElementLocated(
-                        By.className("results-context-header__new-jobs")));
-        String jobsText = newJobs.getText();
+        String[] elementNames = { "results-context-header__new-jobs",
+                "results-context-header__job-count" };
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        String jobsText = null;
+        for (String element : elementNames) {
+            try {
+                WebElement newJobs = wait.until(ExpectedConditions
+                        .presenceOfElementLocated(By.className(element)));
+                jobsText = newJobs.getText();
+                break;
+            } catch (Exception e) {
+                log.trace("Error locating {}", element);
+            }
+        }
         assertThat(jobsText).isNotNull();
 
         int numbersOnly = Integer.parseInt(jobsText.replaceAll("[^0-9]", ""));
