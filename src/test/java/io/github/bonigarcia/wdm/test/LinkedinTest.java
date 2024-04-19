@@ -47,7 +47,7 @@ class LinkedinTest {
     static final String DATASET = "docs/dataset.csv";
     static final String DATE_PATTERN = "dd MMM, yyyy";
     static final String LINKEDIN_BASE_URL = "https://www.linkedin.com/";
-    static final int WAIT_SEC = 30;
+    static final int WAIT_SEC = 10;
 
     WebDriver driver;
     WebDriverWait wait;
@@ -88,7 +88,7 @@ class LinkedinTest {
         }
     }
 
-    void login() {
+    void login() throws InterruptedException {
         driver.get(LINKEDIN_BASE_URL);
 
         String login = System.getenv("LI_LOGIN");
@@ -101,8 +101,7 @@ class LinkedinTest {
 
         getElement(By.cssSelector("button[type='submit']")).click();
 
-        // Get search text box to wait until login is completed
-        getElement(By.className("search-global-typeahead__input"));
+        Thread.sleep(5000);
     }
 
     WebElement getElement(By by) {
