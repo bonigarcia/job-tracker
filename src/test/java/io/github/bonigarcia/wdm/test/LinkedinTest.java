@@ -85,9 +85,9 @@ class LinkedinTest {
         }
 
         // Write results to CSV file
-        try (CSVWriter writer = new CSVWriter(new FileWriter(DATASET, true))) {
-            writer.writeNext(results.toArray(new String[0]), false);
-        }
+//        try (CSVWriter writer = new CSVWriter(new FileWriter(DATASET, true))) {
+//            writer.writeNext(results.toArray(new String[0]), false);
+//        }
     }
 
     void login() throws InterruptedException {
@@ -104,13 +104,17 @@ class LinkedinTest {
         getElement(By.cssSelector("button[type='submit']")).click();
 
         Thread.sleep(5000);
+
+        testScreenshotBase64();
     }
 
     WebElement getElement(By by) {
         return wait.until(ExpectedConditions.presenceOfElementLocated(by));
     }
 
-    int searchJobs(String keyword) {
+    int searchJobs(String keyword) throws InterruptedException {
+        Thread.sleep(5000);
+
         String linkedinUrl = String.format(
                 "%sjobs/search/?currentJobId=3902340547&f_TPR=r86400&geoId=92000000&keywords=%s%%20testing&location=Worldwide&origin=JOB_SEARCH_PAGE_SEARCH_BUTTON&refresh=true",
                 LINKEDIN_BASE_URL, keyword);
@@ -118,9 +122,7 @@ class LinkedinTest {
         log.debug("URL: {}", linkedinUrl);
         testScreenshotBase64();
 
-        String[] elementNames = { "jobs-search-results-list__subtitle",
-                "results-context-header__new-jobs",
-                "results-context-header__job-count" };
+        String[] elementNames = { "jobs-search-results-list__subtitle" };
         String jobsText = null;
         for (String element : elementNames) {
             try {
