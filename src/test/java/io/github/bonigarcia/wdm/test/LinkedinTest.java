@@ -46,12 +46,16 @@ class LinkedinTest {
     static final Logger log = getLogger(lookup().lookupClass());
     static final String DATASET = "docs/dataset.csv";
     static final String DATE_PATTERN = "dd MMM, yyyy";
+    static final String LINKEDIN_BASE_URL = "https://www.linkedin.com/";
+    static final int WAIT_SEC = 10;
 
     WebDriver driver;
+    WebDriverWait wait;
 
     @BeforeEach
     void setup() {
         driver = new ChromeDriver();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(WAIT_SEC));
     }
 
     @AfterEach
@@ -61,22 +65,21 @@ class LinkedinTest {
 
     @Test
     void testLinkedinJobs() throws Exception {
+        login();
+
         List<String> results = new ArrayList<>();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_PATTERN);
         String now = simpleDateFormat.format(new Date());
         results.add(now);
 
-        List<String> frameworks = Arrays.asList("Puppeteer", "Cypress",
-                "Selenium", "Playwright");
+        List<String> frameworks = Arrays.asList("Puppeteer", "Playwright",
+                "Cypress", "Selenium");
 
         // Read number of jobs for each framework from Linkedin
         for (String framework : frameworks) {
             int numJobs = searchJobs(framework);
             log.info("{} ---> {}", framework, numJobs);
             results.add(String.valueOf(numJobs));
-
-            // Wait a guard time to avoid Linkedin to force login
-            Thread.sleep(Duration.ofSeconds(20).toMillis());
         }
 
         // Write results to CSV file
@@ -85,30 +88,51 @@ class LinkedinTest {
         }
     }
 
+    void login() {
+        driver.get(LINKEDIN_BASE_URL);
+
+        String login = System.getenv("LI_LOGIN");
+        assertThat(login).isNotNull();
+        getElement(By.id("session_key")).sendKeys(login);
+
+        String password = System.getenv("LI_PASSWORD");
+        assertThat(password).isNotNull();
+        getElement(By.id("session_password")).sendKeys(password);
+
+        getElement(By.cssSelector("button[type='submit']")).click();
+
+        // Get search text box to wait until login is completed
+        getElement(By.className("search-global-typeahead__input"));
+    }
+
+    WebElement getElement(By by) {
+        return wait.until(ExpectedConditions.presenceOfElementLocated(by));
+    }
+
     int searchJobs(String keyword) {
         String linkedinUrl = String.format(
-                "https://www.linkedin.com/jobs/search/?keywords=%s&location=Worldwide&locationId=&geoId=92000000&f_TPR=r86400&position=1&pageNum=0",
-                keyword);
+                "%sjobs/search/?keywords=%s&location=Worldwide&locationId=&geoId=92000000&f_TPR=r86400&position=1&pageNum=0",
+                LINKEDIN_BASE_URL, keyword);
         driver.get(linkedinUrl);
         log.trace("URL: {}", linkedinUrl);
 
-        String[] elementNames = { "results-context-header__new-jobs",
+        String[] elementNames = { "jobs-search-results-list__subtitle",
+                "results-context-header__new-jobs",
                 "results-context-header__job-count" };
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         String jobsText = null;
         for (String element : elementNames) {
             try {
-                WebElement newJobs = wait.until(ExpectedConditions
-                        .presenceOfElementLocated(By.className(element)));
+                WebElement newJobs = getElement(By.className(element));
                 jobsText = newJobs.getText();
                 break;
             } catch (Exception e) {
                 log.trace("Error locating {}", element);
             }
         }
-        assertThat(jobsText).isNotNull();
-
-        int numbersOnly = Integer.parseInt(jobsText.replaceAll("[^0-9]", ""));
+        int numbersOnly = 0;
+        if (jobsText != null) {
+            numbersOnly = Integer.parseInt(jobsText.replaceAll("[^0-9]", ""));
+        }
         log.trace("{} jobs: {} -> ", keyword, jobsText, numbersOnly);
 
         return numbersOnly;
