@@ -93,6 +93,7 @@ class LinkedinTest {
 
         String login = System.getenv("LI_LOGIN");
         assertThat(login).isNotNull();
+        log.debug("login: {}", login);
         getElement(By.id("session_key")).sendKeys(login);
 
         String password = System.getenv("LI_PASSWORD");
