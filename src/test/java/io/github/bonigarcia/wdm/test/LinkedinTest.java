@@ -110,7 +110,7 @@ class LinkedinTest {
 
     int searchJobs(String keyword) {
         String linkedinUrl = String.format(
-                "%sjobs/search/?currentJobId=3902340547&f_TPR=r86400&geoId=92000000&keywords=%s%20testing&location=Worldwide&origin=JOB_SEARCH_PAGE_SEARCH_BUTTON&refresh=true",
+                "%sjobs/search/?currentJobId=3902340547&f_TPR=r86400&geoId=92000000&keywords=%s%%20testing&location=Worldwide&origin=JOB_SEARCH_PAGE_SEARCH_BUTTON&refresh=true",
                 LINKEDIN_BASE_URL, keyword);
         driver.get(linkedinUrl);
         log.trace("URL: {}", linkedinUrl);
