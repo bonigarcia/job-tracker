@@ -110,14 +110,12 @@ class LinkedinTest {
 
     int searchJobs(String keyword) {
         String linkedinUrl = String.format(
-                "%sjobs/search/?keywords=%s&location=Worldwide&locationId=&geoId=92000000&f_TPR=r86400&position=1&pageNum=0",
+                "%sjobs/search/?currentJobId=3902340547&f_TPR=r86400&geoId=92000000&keywords=%s%20testing&location=Worldwide&origin=JOB_SEARCH_PAGE_SEARCH_BUTTON&refresh=true",
                 LINKEDIN_BASE_URL, keyword);
         driver.get(linkedinUrl);
         log.trace("URL: {}", linkedinUrl);
 
-        String[] elementNames = { "jobs-search-results-list__subtitle",
-                "results-context-header__new-jobs",
-                "results-context-header__job-count" };
+        String[] elementNames = { "jobs-search-results-list__subtitle" };
         String jobsText = null;
         for (String element : elementNames) {
             try {
@@ -125,7 +123,7 @@ class LinkedinTest {
                 jobsText = newJobs.getText();
                 break;
             } catch (Exception e) {
-                log.trace("Error locating {}", element);
+                log.debug("Error locating {}: {}", element, e.getMessage());
             }
         }
         int numbersOnly = 0;
