@@ -14,6 +14,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       DISPLAY: :99
+      LI_LOGIN: ${{ secrets.LI_LOGIN }}
+      LI_PASSWORD: ${{ secrets.LI_PASSWORD }}
     steps:
     - name: Checkout GitHub repo
       uses: actions/checkout@v3
