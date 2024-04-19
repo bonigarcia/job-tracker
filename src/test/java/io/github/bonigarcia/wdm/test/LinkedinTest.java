@@ -32,6 +32,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -113,9 +115,12 @@ class LinkedinTest {
                 "%sjobs/search/?currentJobId=3902340547&f_TPR=r86400&geoId=92000000&keywords=%s%%20testing&location=Worldwide&origin=JOB_SEARCH_PAGE_SEARCH_BUTTON&refresh=true",
                 LINKEDIN_BASE_URL, keyword);
         driver.get(linkedinUrl);
-        log.trace("URL: {}", linkedinUrl);
+        log.debug("URL: {}", linkedinUrl);
+        testScreenshotBase64();
 
-        String[] elementNames = { "jobs-search-results-list__subtitle" };
+        String[] elementNames = { "jobs-search-results-list__subtitle",
+                "results-context-header__new-jobs",
+                "results-context-header__job-count" };
         String jobsText = null;
         for (String element : elementNames) {
             try {
@@ -133,6 +138,12 @@ class LinkedinTest {
         log.trace("{} jobs: {} -> ", keyword, jobsText, numbersOnly);
 
         return numbersOnly;
+    }
+
+    void testScreenshotBase64() {
+        TakesScreenshot ts = (TakesScreenshot) driver;
+        String screenshot = ts.getScreenshotAs(OutputType.BASE64);
+        log.debug("data:image/png;base64,{}", screenshot);
     }
 
 }
