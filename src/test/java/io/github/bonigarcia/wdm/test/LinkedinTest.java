@@ -47,7 +47,7 @@ class LinkedinTest {
     static final String DATASET = "docs/dataset.csv";
     static final String DATE_PATTERN = "dd MMM, yyyy";
     static final String LINKEDIN_BASE_URL = "https://www.linkedin.com/";
-    static final int WAIT_SEC = 10;
+    static final int WAIT_SEC = 30;
 
     WebDriver driver;
     WebDriverWait wait;
@@ -93,7 +93,6 @@ class LinkedinTest {
 
         String login = System.getenv("LI_LOGIN");
         assertThat(login).isNotNull();
-        log.debug("login: {}", login);
         getElement(By.id("session_key")).sendKeys(login);
 
         String password = System.getenv("LI_PASSWORD");
