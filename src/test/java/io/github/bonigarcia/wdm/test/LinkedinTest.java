@@ -17,7 +17,6 @@
 package io.github.bonigarcia.wdm.test;
 
 import static java.lang.invoke.MethodHandles.lookup;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.FileWriter;
@@ -67,8 +66,6 @@ class LinkedinTest {
 
     @Test
     void testLinkedinJobs() throws Exception {
-        login();
-
         List<String> results = new ArrayList<>();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_PATTERN);
         String now = simpleDateFormat.format(new Date());
@@ -82,30 +79,15 @@ class LinkedinTest {
             int numJobs = searchJobs(framework);
             log.info("{} ---> {}", framework, numJobs);
             results.add(String.valueOf(numJobs));
+
+            // Wait a guard time to avoid Linkedin to force login
+            Thread.sleep(Duration.ofSeconds(20).toMillis());
         }
 
         // Write results to CSV file
-//        try (CSVWriter writer = new CSVWriter(new FileWriter(DATASET, true))) {
-//            writer.writeNext(results.toArray(new String[0]), false);
-//        }
-    }
-
-    void login() throws InterruptedException {
-        driver.get(LINKEDIN_BASE_URL);
-
-        String login = System.getenv("LI_LOGIN");
-        assertThat(login).isNotNull();
-        getElement(By.id("session_key")).sendKeys(login);
-
-        String password = System.getenv("LI_PASSWORD");
-        assertThat(password).isNotNull();
-        getElement(By.id("session_password")).sendKeys(password);
-
-        getElement(By.cssSelector("button[type='submit']")).click();
-
-        Thread.sleep(5000);
-
-        testScreenshotBase64();
+        try (CSVWriter writer = new CSVWriter(new FileWriter(DATASET, true))) {
+            writer.writeNext(results.toArray(new String[0]), false);
+        }
     }
 
     WebElement getElement(By by) {
@@ -113,8 +95,6 @@ class LinkedinTest {
     }
 
     int searchJobs(String keyword) throws InterruptedException {
-        Thread.sleep(5000);
-
         String linkedinUrl = String.format(
                 "%sjobs/search/?currentJobId=3902340547&f_TPR=r86400&geoId=92000000&keywords=%s%%20testing&location=Worldwide&origin=JOB_SEARCH_PAGE_SEARCH_BUTTON&refresh=true",
                 LINKEDIN_BASE_URL, keyword);
@@ -122,7 +102,9 @@ class LinkedinTest {
         log.debug("URL: {}", linkedinUrl);
         testScreenshotBase64();
 
-        String[] elementNames = { "jobs-search-results-list__subtitle" };
+        String[] elementNames = { "jobs-search-results-list__subtitle",
+                "results-context-header__new-jobs",
+                "results-context-header__job-count" };
         String jobsText = null;
         for (String element : elementNames) {
             try {
