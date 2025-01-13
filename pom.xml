@@ -12,7 +12,7 @@
         <junit.version>5.11.4</junit.version>
         <assertj.version>3.27.1</assertj.version>
         <selenium-java.version>4.27.0</selenium-java.version>
-        <opencsv.version>5.9</opencsv.version>
+        <opencsv.version>5.10</opencsv.version>
 
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
 
