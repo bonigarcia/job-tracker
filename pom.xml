@@ -9,7 +9,7 @@
         <slf4j.version>2.0.17</slf4j.version>
         <logback.version>1.5.29</logback.version>
 
-        <junit.version>6.0.1</junit.version>
+        <junit.version>6.0.3</junit.version>
         <assertj.version>3.27.6</assertj.version>
         <selenium-java.version>4.39.0</selenium-java.version>
         <opencsv.version>5.12.0</opencsv.version>
