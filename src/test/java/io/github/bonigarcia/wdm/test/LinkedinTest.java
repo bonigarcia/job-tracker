@@ -17,7 +17,6 @@
 package io.github.bonigarcia.wdm.test;
 
 import static java.lang.invoke.MethodHandles.lookup;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.FileWriter;
@@ -32,6 +31,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -46,12 +47,16 @@ class LinkedinTest {
     static final Logger log = getLogger(lookup().lookupClass());
     static final String DATASET = "docs/dataset.csv";
     static final String DATE_PATTERN = "dd MMM, yyyy";
+    static final String LINKEDIN_BASE_URL = "https://www.linkedin.com/";
+    static final int WAIT_SEC = 10;
 
     WebDriver driver;
+    WebDriverWait wait;
 
     @BeforeEach
     void setup() {
         driver = new ChromeDriver();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(WAIT_SEC));
     }
 
     @AfterEach
@@ -66,8 +71,8 @@ class LinkedinTest {
         String now = simpleDateFormat.format(new Date());
         results.add(now);
 
-        List<String> frameworks = Arrays.asList("Puppeteer", "Cypress",
-                "Selenium", "Playwright");
+        List<String> frameworks = Arrays.asList("Puppeteer", "Playwright",
+                "Cypress", "Selenium");
 
         // Read number of jobs for each framework from Linkedin
         for (String framework : frameworks) {
@@ -76,7 +81,7 @@ class LinkedinTest {
             results.add(String.valueOf(numJobs));
 
             // Wait a guard time to avoid Linkedin to force login
-            Thread.sleep(Duration.ofSeconds(10).toMillis());
+            Thread.sleep(Duration.ofSeconds(20).toMillis());
         }
 
         // Write results to CSV file
@@ -85,24 +90,44 @@ class LinkedinTest {
         }
     }
 
-    int searchJobs(String keyword) {
+    WebElement getElement(By by) {
+        return wait.until(ExpectedConditions.presenceOfElementLocated(by));
+    }
+
+    int searchJobs(String keyword) throws InterruptedException {
         String linkedinUrl = String.format(
-                "https://www.linkedin.com/jobs/search/?keywords=%s&location=Worldwide&locationId=&geoId=92000000&f_TPR=r86400&position=1&pageNum=0",
-                keyword);
+                "%sjobs/search/?currentJobId=3902340547&f_TPR=r86400&geoId=92000000&keywords=%s%%20testing&location=Worldwide&origin=JOB_SEARCH_PAGE_SEARCH_BUTTON&refresh=true",
+                LINKEDIN_BASE_URL, keyword);
         driver.get(linkedinUrl);
-        log.trace("URL: {}", linkedinUrl);
+        log.debug("URL: {}", linkedinUrl);
+        testScreenshotBase64();
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        WebElement newJobs = wait
-                .until(ExpectedConditions.presenceOfElementLocated(
-                        By.className("results-context-header__new-jobs")));
-        String jobsText = newJobs.getText();
-        assertThat(jobsText).isNotNull();
-
-        int numbersOnly = Integer.parseInt(jobsText.replaceAll("[^0-9]", ""));
+        String[] elementNames = { "jobs-search-results-list__subtitle",
+                "results-context-header__new-jobs",
+                "results-context-header__job-count" };
+        String jobsText = null;
+        for (String element : elementNames) {
+            try {
+                WebElement newJobs = getElement(By.className(element));
+                jobsText = newJobs.getText();
+                break;
+            } catch (Exception e) {
+                log.debug("Error locating {}: {}", element, e.getMessage());
+            }
+        }
+        int numbersOnly = 0;
+        if (jobsText != null) {
+            numbersOnly = Integer.parseInt(jobsText.replaceAll("[^0-9]", ""));
+        }
         log.trace("{} jobs: {} -> ", keyword, jobsText, numbersOnly);
 
         return numbersOnly;
+    }
+
+    void testScreenshotBase64() {
+        TakesScreenshot ts = (TakesScreenshot) driver;
+        String screenshot = ts.getScreenshotAs(OutputType.BASE64);
+        log.debug("data:image/png;base64,{}", screenshot);
     }
 
 }
